@@ -1,16 +1,16 @@
 export const BASE_URL = "http://localhost:5000/api/v1";
 
 export const MENU_ITEM = [
-   { name: "Users", link: "/users" },
-   { name: "Posts", link: "/posts" },
+   { name: "Users", link: "/dashboard/users" },
+   { name: "Posts", link: "/dashboard/posts" },
    //    { name: "Reports", link: "/reports" },
-   { name: "Comments", link: "/comments" },
-   { name: "Suggestions", link: "/suggestions" },
+   { name: "Comments", link: "/dashboard/comments" },
+   { name: "Suggestions", link: "/dashboard/suggestions" },
 ];
 
 export const MENU_ITEMS_2 = [
-   { name: "Report List", link: "" },
-   { name: "Block List", link: "" },
-   { name: "Settings", link: "" },
-   { name: "Logout", link: "" },
+   { name: "Report List", link: "/dashboard/reports" },
+   { name: "Block List", link: "/dashboard/block-list" },
+   { name: "Settings", link: "/dashboard/settings" },
+   { name: "Logout", link: "/dashboard/logout" },
 ];

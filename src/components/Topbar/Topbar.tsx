@@ -32,6 +32,7 @@ import {
    Menu,
    Close,
 } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
 
 const drawerWidth = 240;
 
@@ -109,6 +110,7 @@ const Drawer = styled(MuiDrawer, {
 export default function MiniDrawer() {
    const theme = useTheme();
    const [open, setOpen] = React.useState(false);
+   const router = useRouter();
 
    const handleDrawerOpen = () => {
       setOpen(true);
@@ -161,6 +163,9 @@ export default function MiniDrawer() {
                      key={index}
                      disablePadding
                      sx={{ display: "block" }}
+                     onClick={() => {
+                        router.push(`${text.link}`);
+                     }}
                   >
                      <ListItemButton
                         sx={{
@@ -201,6 +206,9 @@ export default function MiniDrawer() {
                      key={index}
                      disablePadding
                      sx={{ display: "block" }}
+                     onClick={() => {
+                        router.push(`${text.link}`);
+                     }}
                   >
                      <ListItemButton
                         sx={{
