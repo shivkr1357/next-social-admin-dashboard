@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { authReducer as auth } from "./themeReducer";
+import { authReducer as auth } from "./user";
 
 const tobePersisted = {
    auth,

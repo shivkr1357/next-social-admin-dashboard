@@ -15,6 +15,7 @@ export default function CustomTypography({
       fontSize: fontSize + "px",
       color: color,
       fontWeight: weight,
+      marginBottom: "20px",
       [theme.breakpoints.up("xs")]: {
          width: "auto",
       },

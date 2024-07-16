@@ -1,4 +1,3 @@
-import { IUser } from "@/types/types";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: IAuthState = {
@@ -20,6 +19,6 @@ export const authReducer = authSlice.reducer;
 export const authActions = authSlice.actions;
 
 export interface IAuthState {
-   user?: IUser;
+   user?: any;
    blockedUsers: any[];
 }
