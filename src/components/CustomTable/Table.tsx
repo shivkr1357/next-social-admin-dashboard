@@ -21,6 +21,8 @@ import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
 
 interface Data {
    id: number;
@@ -280,6 +282,8 @@ export default function EnhancedTable() {
    const [dense, setDense] = React.useState(false);
    const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+   const { sidebar } = useSelector((state: RootState) => state.theme);
+
    const handleRequestSort = (
       event: React.MouseEvent<unknown>,
       property: keyof Data
@@ -350,7 +354,12 @@ export default function EnhancedTable() {
    );
 
    return (
-      <Box sx={{ width: "80%", marginLeft: "250px" }}>
+      <Box
+         sx={{
+            width: sidebar === true ? "80%" : "90%",
+            marginLeft: sidebar === true ? "250px" : "90px",
+         }}
+      >
          <Paper sx={{ width: "100%", mb: 2 }}>
             <EnhancedTableToolbar numSelected={selected.length} />
             <TableContainer>

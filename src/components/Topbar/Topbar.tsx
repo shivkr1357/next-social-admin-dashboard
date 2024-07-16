@@ -33,6 +33,9 @@ import {
    Close,
 } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { themeActions } from "@/app/redux/reducers/theme";
+import { RootState } from "@/app/redux/store";
 
 const drawerWidth = 240;
 
@@ -108,22 +111,24 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer() {
-   const theme = useTheme();
-   const [open, setOpen] = React.useState(false);
+   const dispatch = useDispatch();
+   const { theme, sidebar } = useSelector((state: RootState) => state.theme);
+
+   console.log(theme, sidebar);
    const router = useRouter();
 
    const handleDrawerOpen = () => {
-      setOpen(true);
+      dispatch(themeActions.toggleSidebar());
    };
 
    const handleDrawerClose = () => {
-      setOpen(false);
+      dispatch(themeActions.toggleSidebar());
    };
 
    return (
       <Box sx={{ display: "flex" }}>
          <CssBaseline />
-         <AppBar position='fixed' open={open}>
+         <AppBar position='fixed' open={sidebar}>
             <Toolbar>
                <IconButton
                   color='inherit'
@@ -132,7 +137,7 @@ export default function MiniDrawer() {
                   edge='start'
                   sx={{
                      marginRight: 5,
-                     ...(open && { display: "none" }),
+                     ...(sidebar && { display: "none" }),
                   }}
                >
                   <Menu />
@@ -149,7 +154,7 @@ export default function MiniDrawer() {
                </Stack>
             </Toolbar>
          </AppBar>
-         <Drawer variant='permanent' open={open}>
+         <Drawer variant='permanent' open={sidebar}>
             <DrawerHeader sx={{ justifyContent: "space-between" }}>
                <Typography variant='h6'>Menu</Typography>
                <IconButton onClick={handleDrawerClose}>
@@ -170,14 +175,14 @@ export default function MiniDrawer() {
                      <ListItemButton
                         sx={{
                            minHeight: 48,
-                           justifyContent: open ? "initial" : "center",
+                           justifyContent: sidebar ? "initial" : "center",
                            px: 2.5,
                         }}
                      >
                         <ListItemIcon
                            sx={{
                               minWidth: 0,
-                              mr: open ? 3 : "auto",
+                              mr: sidebar ? 3 : "auto",
                               justifyContent: "center",
                            }}
                         >
@@ -193,7 +198,7 @@ export default function MiniDrawer() {
                         </ListItemIcon>
                         <ListItemText
                            primary={text.name}
-                           sx={{ opacity: open ? 1 : 0 }}
+                           sx={{ opacity: sidebar ? 1 : 0 }}
                         />
                      </ListItemButton>
                   </ListItem>
@@ -213,14 +218,14 @@ export default function MiniDrawer() {
                      <ListItemButton
                         sx={{
                            minHeight: 48,
-                           justifyContent: open ? "initial" : "center",
+                           justifyContent: sidebar ? "initial" : "center",
                            px: 2.5,
                         }}
                      >
                         <ListItemIcon
                            sx={{
                               minWidth: 0,
-                              mr: open ? 3 : "auto",
+                              mr: sidebar ? 3 : "auto",
                               justifyContent: "center",
                            }}
                         >
@@ -236,7 +241,7 @@ export default function MiniDrawer() {
                         </ListItemIcon>
                         <ListItemText
                            primary={text.name}
-                           sx={{ opacity: open ? 1 : 0 }}
+                           sx={{ opacity: sidebar ? 1 : 0 }}
                         />
                      </ListItemButton>
                   </ListItem>
