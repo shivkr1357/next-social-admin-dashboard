@@ -37,7 +37,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { themeActions } from "@/app/redux/reducers/theme";
 import { RootState } from "@/app/redux/store";
 import { logout } from "@/app/redux/actions/auth";
-import { authActions } from "@/app/redux/reducers/user";
+import { authActions } from "@/app/redux/reducers/auth";
 
 const drawerWidth = 240;
 
@@ -180,7 +180,7 @@ export default function MiniDrawer() {
                   <Typography variant='h6' noWrap component='div'>
                      Social Media Admin Dashboard
                   </Typography>
-                  <Avatar />
+                  <Avatar sx={{ cursor: "pointer" }} />
                </Stack>
             </Toolbar>
          </AppBar>
