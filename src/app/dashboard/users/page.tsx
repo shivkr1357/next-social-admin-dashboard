@@ -2,7 +2,7 @@ import EnhancedTable from "@/components/CustomTable/Table";
 import React from "react";
 
 const Users = () => {
-   return <EnhancedTable />;
+  return <EnhancedTable />;
 };
 
 export default Users;
