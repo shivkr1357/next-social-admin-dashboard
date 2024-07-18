@@ -5,6 +5,20 @@ const axiosInstance = axios.create({
    baseURL: "http://localhost:5000/api/v1",
 });
 
+// Flag to indicate whether a token refresh is in progress
+let isRefreshing = false;
+let refreshSubscribers: any[] = [];
+
+// Function to add subscribers to the queue
+function subscribeTokenRefresh(cb: any) {
+   refreshSubscribers.push(cb);
+}
+
+// Function to notify all subscribers
+function onRefreshed(token: string) {
+   refreshSubscribers.map((cb) => cb(token));
+}
+
 // Request interceptor to add the access token to headers
 axiosInstance.interceptors.request.use(
    (config) => {
@@ -25,21 +39,40 @@ axiosInstance.interceptors.response.use(
       return response;
    },
    async (error) => {
-      const originalRequest = error.config;
-      if (error.response.status === 401 && !originalRequest._retry) {
-         originalRequest._retry = true;
-         try {
-            const response = await axiosInstance.post("/auth/verifyToken", {
-               refreshToken: localStorage.getItem("refreshToken"),
+      const { config, response } = error;
+      const originalRequest = config;
+
+      if (response.status === 401 && !originalRequest._retry) {
+         if (!isRefreshing) {
+            originalRequest._retry = true;
+            isRefreshing = true;
+            try {
+               const response = await axiosInstance.post("/auth/verifyToken", {
+                  refreshToken: localStorage.getItem("refreshToken"),
+               });
+               const { accessToken } = response.data;
+               localStorage.setItem("accessToken", accessToken);
+               isRefreshing = false;
+               onRefreshed(accessToken);
+               refreshSubscribers = [];
+               originalRequest.headers[
+                  "Authorization"
+               ] = `Bearer ${accessToken}`;
+               return axiosInstance(originalRequest);
+            } catch (error) {
+               console.error("Refresh token expired", error);
+               isRefreshing = false;
+               refreshSubscribers = [];
+               // Handle token refresh failure (e.g., logout user)
+               return Promise.reject(error);
+            }
+         } else {
+            return new Promise((resolve) => {
+               subscribeTokenRefresh((token: string) => {
+                  originalRequest.headers["Authorization"] = `Bearer ${token}`;
+                  resolve(axiosInstance(originalRequest));
+               });
             });
-            const { accessToken } = response.data;
-            localStorage.setItem("accessToken", accessToken);
-            originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
-            return axiosInstance(originalRequest);
-         } catch (error) {
-            console.error("Refresh token expired", error);
-            // Handle token refresh failure (e.g., logout user)
-            return Promise.reject(error);
          }
       }
       return Promise.reject(error);

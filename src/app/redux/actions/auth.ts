@@ -14,3 +14,11 @@ export const getUser = async (email: string) => {
    );
    return response;
 };
+
+export const logout = async (refreshToken: string) => {
+   const response = await axiosInstance.delete(`${BASE_URL}/auth/logout`, {
+      data: { refreshToken: refreshToken },
+   });
+
+   return response;
+};

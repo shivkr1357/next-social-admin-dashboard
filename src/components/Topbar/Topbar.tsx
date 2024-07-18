@@ -36,6 +36,8 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { themeActions } from "@/app/redux/reducers/theme";
 import { RootState } from "@/app/redux/store";
+import { logout } from "@/app/redux/actions/auth";
+import { authActions } from "@/app/redux/reducers/user";
 
 const drawerWidth = 240;
 
@@ -125,6 +127,34 @@ export default function MiniDrawer() {
       dispatch(themeActions.toggleSidebar());
    };
 
+   const handleLogout = async () => {
+      console.log("logout called");
+
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (refreshToken) {
+         await logout(refreshToken)
+            .then((response) => {
+               if (response) {
+                  dispatch(authActions.setCurrentUser([]));
+                  localStorage.removeItem("accessToken");
+                  localStorage.removeItem("refreshToken");
+                  router.push("/");
+               }
+            })
+            .catch((err) => {
+               console.log(err);
+            });
+      }
+   };
+
+   const handleClick = (name: any) => {
+      if (name.name === "Logout") {
+         handleLogout();
+      } else {
+         router.push(`${name.link}`);
+      }
+   };
+
    return (
       <Box sx={{ display: "flex" }}>
          <CssBaseline />
@@ -212,7 +242,7 @@ export default function MiniDrawer() {
                      disablePadding
                      sx={{ display: "block" }}
                      onClick={() => {
-                        router.push(`${text.link}`);
+                        handleClick(text);
                      }}
                   >
                      <ListItemButton

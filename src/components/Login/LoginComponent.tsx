@@ -44,7 +44,7 @@ const LoginComponent = () => {
             await getUser(email)
                .then((response) => {
                   dispatch(authActions.setCurrentUser(response.data.user));
-                  router.push("/dashboard");
+                  router.push("/dashboard/users");
                })
                .catch((error) => {
                   console.log(error);
