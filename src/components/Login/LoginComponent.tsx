@@ -6,7 +6,7 @@ import CustomTypography from "../CustomTypography/CustomTypography";
 import { getUser, loginUser } from "@/app/redux/actions/auth";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { authActions } from "@/app/redux/reducers/user";
+import { authActions } from "@/app/redux/reducers/auth";
 
 const CustomStack = styled(Stack)(({ theme }) => ({
    padding: "5px 10px",
@@ -71,7 +71,7 @@ const LoginComponent = () => {
 
    useEffect(() => {
       if (localStorage.getItem("accessToken")) {
-         return router.push("/dashboard");
+         return router.push("/dashboard/users");
       }
    }, []);
 

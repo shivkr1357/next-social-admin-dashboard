@@ -1,24 +1,37 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: IAuthState = {
-   user: undefined,
-   blockedUsers: [],
+const initialState: IUserState = {
+  users: [],
+  order: "",
+  orderBy: "",
+  selected: [],
+  page: 0,
+  dense: false,
+  rowsPerPage: 5,
 };
 
-export const authSlice = createSlice({
-   name: "auth",
-   initialState,
-   reducers: {
-      setCurrentUser: (s, a) => {
-         s.user = a.payload;
-      },
-   },
+export const usersSlice = createSlice({
+  name: "users",
+  initialState,
+  reducers: {
+    setAllUser: (s, a) => {
+      s.users = a.payload;
+    },
+    setOrder: (s, a) => {
+      s.order = a.payload;
+    },
+  },
 });
 
-export const authReducer = authSlice.reducer;
-export const authActions = authSlice.actions;
+export const usersReducer = usersSlice.reducer;
+export const usersActions = usersSlice.actions;
 
-export interface IAuthState {
-   user?: any;
-   blockedUsers: any[];
+export interface IUserState {
+  users: any;
+  order: string;
+  orderBy: string;
+  selected: [];
+  page: number;
+  dense: boolean;
+  rowsPerPage: number;
 }
