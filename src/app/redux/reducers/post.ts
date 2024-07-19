@@ -1,21 +1,21 @@
 import { Order } from "@/utils/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Data } from "@/types/types";
+import { PostData } from "@/types/types";
 
-export interface IUserState {
-   users: Data[];
+export interface IPostState {
+   posts: PostData[];
    order: Order;
-   orderBy: keyof Data;
+   orderBy: keyof PostData;
    selected: number[];
    page: number;
    dense: boolean;
    rowsPerPage: number;
 }
 
-const initialState: IUserState = {
-   users: [],
+const initialState: IPostState = {
+   posts: [],
    order: "asc",
-   orderBy: "email",
+   orderBy: "title",
    selected: [],
    page: 0,
    dense: false,
@@ -23,16 +23,16 @@ const initialState: IUserState = {
 };
 
 export const usersSlice = createSlice({
-   name: "users",
+   name: "posts",
    initialState,
    reducers: {
-      setAllUser: (state, action: PayloadAction<Data[]>) => {
-         state.users = action.payload;
+      setAllPosts: (state, action: PayloadAction<PostData[]>) => {
+         state.posts = action.payload;
       },
       setOrder: (state, action: PayloadAction<Order>) => {
          state.order = action.payload;
       },
-      setOrderBy: (state, action: PayloadAction<keyof Data>) => {
+      setOrderBy: (state, action: PayloadAction<keyof PostData>) => {
          state.orderBy = action.payload;
       },
       setPage: (state, action: PayloadAction<number>) => {
