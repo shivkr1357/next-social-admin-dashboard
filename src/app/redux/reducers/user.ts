@@ -1,53 +1,53 @@
-import { Order } from "@/utils/utils";
-import { createSlice } from "@reduxjs/toolkit";
+import { Data, Order } from "@/utils/utils";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+export interface IUserState {
+  users: Data[];
+  order: Order;
+  orderBy: keyof Data;
+  selected: number[];
+  page: number;
+  dense: boolean;
+  rowsPerPage: number;
+}
 
 const initialState: IUserState = {
-   users: [],
-   order: "asc",
-   orderBy: "",
-   selected: [],
-   page: 0,
-   dense: false,
-   rowsPerPage: 5,
+  users: [],
+  order: "asc",
+  orderBy: "email",
+  selected: [],
+  page: 0,
+  dense: false,
+  rowsPerPage: 5,
 };
 
 export const usersSlice = createSlice({
-   name: "users",
-   initialState,
-   reducers: {
-      setAllUser: (s, a) => {
-         s.users = a.payload;
-      },
-      setOrder: (s, a) => {
-         s.order = a.payload;
-      },
-      setOrderBy: (s, a) => {
-         s.orderBy = a.payload;
-      },
-      setPage: (s, a) => {
-         s.page = a.payload;
-      },
-      setDense: (s, a) => {
-         s.dense = a.payload;
-      },
-      setRowPerPage: (s, a) => {
-         s.rowsPerPage = a.payload;
-      },
-      setSelected: (s, a) => {
-         s.selected = a.payload;
-      },
-   },
+  name: "users",
+  initialState,
+  reducers: {
+    setAllUser: (state, action: PayloadAction<Data[]>) => {
+      state.users = action.payload;
+    },
+    setOrder: (state, action: PayloadAction<Order>) => {
+      state.order = action.payload;
+    },
+    setOrderBy: (state, action: PayloadAction<keyof Data>) => {
+      state.orderBy = action.payload;
+    },
+    setPage: (state, action: PayloadAction<number>) => {
+      state.page = action.payload;
+    },
+    setDense: (state, action: PayloadAction<boolean>) => {
+      state.dense = action.payload;
+    },
+    setRowPerPage: (state, action: PayloadAction<number>) => {
+      state.rowsPerPage = action.payload;
+    },
+    setSelected: (state, action: PayloadAction<number[]>) => {
+      state.selected = action.payload;
+    },
+  },
 });
 
 export const usersReducer = usersSlice.reducer;
 export const usersActions = usersSlice.actions;
-
-export interface IUserState {
-   users: any;
-   order: Order;
-   orderBy: string;
-   selected: readonly number[];
-   page: number;
-   dense: boolean;
-   rowsPerPage: number;
-}
