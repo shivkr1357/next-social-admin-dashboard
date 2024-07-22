@@ -3,6 +3,7 @@ import { getAllUsers } from "@/app/redux/actions/user";
 import { usersActions } from "@/app/redux/reducers/user";
 import { RootState } from "@/app/redux/store";
 import EnhancedTable from "@/components/CustomTable/Table";
+import { Data } from "@/types/types";
 import { generateHeadCells, HeadCell, isAuthenticated } from "@/utils/utils";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
@@ -17,6 +18,9 @@ const Users = () => {
    const router = useRouter();
 
    const { users } = useSelector((state: RootState) => state.users);
+   const { order, orderBy, selected, page, dense, rowsPerPage } = useSelector(
+      (state: RootState) => state.paginationn
+   );
 
    const getAllUsersData = useCallback(async () => {
       try {
@@ -39,7 +43,19 @@ const Users = () => {
       }
    }, [accessTokenCheck]);
 
-   return <EnhancedTable data={users} tableHeadData={headCells} />;
+   return (
+      <EnhancedTable<Data>
+         data={users}
+         tableHeadData={headCells}
+         order={order}
+         orderBy={orderBy as keyof Data}
+         selected={selected}
+         page={page}
+         dense={dense}
+         rowsPerPage={rowsPerPage}
+         title='Users'
+      />
+   );
 };
 
 export default Users;

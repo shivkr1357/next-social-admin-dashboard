@@ -28,16 +28,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 
 import { getComparator, Order, HeadCell } from "@/utils/utils";
-import { Data } from "@/types/types";
-import { usersActions } from "@/app/redux/reducers/user";
+import { paginationActions } from "@/app/redux/reducers/pagination";
 
-function stableSort(
-   array: readonly Data[],
-   comparator: (a: Data, b: Data) => number
-) {
-   const stabilizedThis = array.map(
-      (el, index) => [el, index] as [Data, number]
-   );
+// Define the generic EnhancedTableProps
+interface EnhancedTableProps<T> {
+   data: T[];
+   tableHeadData: HeadCell[];
+   order: Order;
+   orderBy: string;
+   selected: number[];
+   page: number;
+   dense: boolean;
+   rowsPerPage: number;
+   title: string;
+}
+
+// Use the generic T for stableSort function
+function stableSort<T>(
+   array: readonly T[],
+   comparator: (a: T, b: T) => number
+): T[] {
+   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
    stabilizedThis.sort((a, b) => {
       const order = comparator(a[0], b[0]);
       if (order !== 0) {
@@ -48,17 +59,10 @@ function stableSort(
    return stabilizedThis.map((el) => el[0]);
 }
 
-interface EnhancedTableProps {
-   data: Data[];
-   tableHeadData: HeadCell[];
-}
-
-interface EnhancedTableHeadProps {
+// Define EnhancedTableHead with generics
+interface EnhancedTableHeadProps<T> {
    numSelected: number;
-   onRequestSort: (
-      event: React.MouseEvent<unknown>,
-      property: keyof Data
-   ) => void;
+   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof T) => void;
    onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
    order: Order;
    orderBy: string;
@@ -66,7 +70,7 @@ interface EnhancedTableHeadProps {
    tableHeadData: HeadCell[];
 }
 
-function EnhancedTableHead(props: EnhancedTableHeadProps) {
+function EnhancedTableHead<T>(props: EnhancedTableHeadProps<T>) {
    const {
       onSelectAllClick,
       order,
@@ -76,8 +80,9 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
       onRequestSort,
       tableHeadData,
    } = props;
+
    const createSortHandler =
-      (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+      (property: keyof T) => (event: React.MouseEvent<unknown>) => {
          onRequestSort(event, property);
       };
 
@@ -105,7 +110,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
                   <TableSortLabel
                      active={orderBy === headCell.id}
                      direction={orderBy === headCell.id ? order : "asc"}
-                     onClick={createSortHandler(headCell.id)}
+                     onClick={createSortHandler(headCell.id as keyof T)}
                   >
                      {headCell.label}
                      {orderBy === headCell.id ? (
@@ -125,10 +130,11 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
 
 interface EnhancedTableToolbarProps {
    numSelected: number;
+   title: string;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-   const { numSelected } = props;
+   const { numSelected, title } = props;
 
    return (
       <Toolbar
@@ -160,7 +166,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                id='tableTitle'
                component='div'
             >
-               Users
+               {title}
             </Typography>
          )}
          {numSelected > 0 ? (
@@ -180,36 +186,39 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
    );
 }
 
-export default function EnhancedTable({
+// Use the generic type in the EnhancedTable component
+export default function EnhancedTable<T>({
    data,
    tableHeadData,
-}: EnhancedTableProps) {
+   order,
+   orderBy,
+   selected,
+   page,
+   dense,
+   rowsPerPage,
+   title,
+}: EnhancedTableProps<T>) {
    const dispatch = useDispatch();
-
    const { sidebar } = useSelector((state: RootState) => state.theme);
-
-   const { order, orderBy, selected, page, dense, rowsPerPage } = useSelector(
-      (state: RootState) => state.users
-   );
 
    const handleRequestSort = (
       event: React.MouseEvent<unknown>,
-      property: keyof Data
+      property: string | number
    ) => {
       const isAsc = orderBy === property && order === "asc";
-      dispatch(usersActions.setOrder(isAsc ? "desc" : "asc"));
-      dispatch(usersActions.setOrderBy(property));
+      dispatch(paginationActions.setOrder(isAsc ? "desc" : "asc"));
+      dispatch(paginationActions.setOrderBy(property));
    };
 
    const handleSelectAllClick = (
       event: React.ChangeEvent<HTMLInputElement>
    ) => {
       if (event.target.checked) {
-         const newSelected = data.map((n) => n.id);
-         dispatch(usersActions.setSelected(newSelected));
+         const newSelected = data.map((n) => (n as any).id);
+         dispatch(paginationActions.setSelected(newSelected));
          return;
       }
-      dispatch(usersActions.setSelected([]));
+      dispatch(paginationActions.setSelected([]));
    };
 
    const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
@@ -229,22 +238,24 @@ export default function EnhancedTable({
          );
       }
 
-      dispatch(usersActions.setSelected(newSelected));
+      dispatch(paginationActions.setSelected(newSelected));
    };
 
    const handleChangePage = (event: unknown, newPage: number) => {
-      dispatch(usersActions.setPage(newPage));
+      dispatch(paginationActions.setPage(newPage));
    };
 
    const handleChangeRowsPerPage = (
       event: React.ChangeEvent<HTMLInputElement>
    ) => {
-      dispatch(usersActions.setRowPerPage(parseInt(event.target.value, 10)));
-      dispatch(usersActions.setPage(0));
+      dispatch(
+         paginationActions.setRowPerPage(parseInt(event.target.value, 10))
+      );
+      dispatch(paginationActions.setPage(0));
    };
 
    const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-      dispatch(usersActions.setDense(event.target.checked));
+      dispatch(paginationActions.setDense(event.target.checked));
    };
 
    const isSelected = (id: number) => selected.indexOf(id) !== -1;
@@ -255,7 +266,7 @@ export default function EnhancedTable({
 
    const visibleRows = useMemo(
       () =>
-         stableSort(data, getComparator(order, orderBy)).slice(
+         stableSort(data, getComparator(order, orderBy as string)).slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage
          ),
@@ -270,7 +281,7 @@ export default function EnhancedTable({
          }}
       >
          <Paper sx={{ width: "100%", mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected.length} />
+            <EnhancedTableToolbar numSelected={selected.length} title={title} />
             <TableContainer>
                <Table
                   sx={{ minWidth: 750 }}
@@ -298,7 +309,7 @@ export default function EnhancedTable({
                               role='checkbox'
                               aria-checked={isItemSelected}
                               tabIndex={-1}
-                              key={row._id}
+                              key={index}
                               selected={isItemSelected}
                               sx={{ cursor: "pointer" }}
                            >
@@ -316,7 +327,7 @@ export default function EnhancedTable({
                                     key={headCell.id}
                                     align={headCell.numeric ? "right" : "left"}
                                  >
-                                    {row[headCell.id as keyof Data]}
+                                    {`${(row as any)[headCell.id]}`}
                                  </TableCell>
                               ))}
                            </TableRow>
@@ -328,7 +339,7 @@ export default function EnhancedTable({
                               height: (dense ? 33 : 53) * emptyRows,
                            }}
                         >
-                           <TableCell colSpan={6} />
+                           <TableCell colSpan={tableHeadData.length} />
                         </TableRow>
                      )}
                   </TableBody>
