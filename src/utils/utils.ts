@@ -37,9 +37,11 @@ export function getComparator(
 
 export interface HeadCell {
    disablePadding: boolean;
-   id: keyof Data;
+   id: keyof Data | "createdAt" | "userId" | "comments";
    label: string;
    numeric: boolean;
+   placeholder: string;
+   required: boolean;
 }
 
 export const generateHeadCells = (data: Data[]): HeadCell[] => {
@@ -49,5 +51,7 @@ export const generateHeadCells = (data: Data[]): HeadCell[] => {
       numeric: typeof data[0][key as keyof Data] === "number",
       disablePadding: false,
       label: key.charAt(0).toUpperCase() + key.slice(1),
+      placeholder: key === "_id" ? "" : `Enter ${key}`,
+      required: key !== "_id",
    }));
 };

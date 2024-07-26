@@ -4,6 +4,7 @@ import { themeReducer as theme } from "./theme";
 import { usersReducer as users } from "./user";
 import { postsReducer as posts } from "./post";
 import { paginationReducer as paginationn } from "./pagination";
+import { commentsReducer as comments } from "./comments";
 
 const tobePersisted = {
    auth,
@@ -11,6 +12,7 @@ const tobePersisted = {
    users,
    paginationn,
    posts,
+   comments,
 };
 
 export const reducers = combineReducers({

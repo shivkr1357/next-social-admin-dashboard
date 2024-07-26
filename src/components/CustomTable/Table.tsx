@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import {
    Box,
@@ -19,6 +19,8 @@ import {
    Tooltip,
    FormControlLabel,
    Switch,
+   Button,
+   Stack,
 } from "@mui/material";
 
 import { Delete, FilterList } from "@mui/icons-material";
@@ -29,6 +31,8 @@ import { RootState } from "@/app/redux/store";
 
 import { getComparator, Order, HeadCell } from "@/utils/utils";
 import { paginationActions } from "@/app/redux/reducers/pagination";
+import moment from "moment";
+import CustomFormModal from "../Modal/CustomFormModal";
 
 // Define the generic EnhancedTableProps
 interface EnhancedTableProps<T> {
@@ -131,10 +135,15 @@ function EnhancedTableHead<T>(props: EnhancedTableHeadProps<T>) {
 interface EnhancedTableToolbarProps {
    numSelected: number;
    title: string;
+   setOpen: (open: boolean) => void;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-   const { numSelected, title } = props;
+   const { numSelected, title, setOpen } = props;
+
+   const handleOpen = () => {
+      setOpen(true);
+   };
 
    return (
       <Toolbar
@@ -160,14 +169,26 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                {numSelected} selected
             </Typography>
          ) : (
-            <Typography
-               sx={{ flex: "1 1 100%" }}
-               variant='h6'
-               id='tableTitle'
-               component='div'
+            <Stack
+               sx={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  width: "100%",
+               }}
             >
-               {title}
-            </Typography>
+               <Typography
+                  sx={{ flex: "1 1 100%" }}
+                  variant='h6'
+                  id='tableTitle'
+                  component='div'
+               >
+                  {title}
+               </Typography>
+               <Button variant='contained' onClick={handleOpen}>
+                  {" "}
+                  Add
+               </Button>
+            </Stack>
          )}
          {numSelected > 0 ? (
             <Tooltip title='Delete'>
@@ -198,8 +219,18 @@ export default function EnhancedTable<T>({
    rowsPerPage,
    title,
 }: EnhancedTableProps<T>) {
+   const [open, setOpen] = useState<boolean>(false);
+
    const dispatch = useDispatch();
    const { sidebar } = useSelector((state: RootState) => state.theme);
+
+   const handleClose = () => {
+      setOpen(!open);
+   };
+
+   const handleSubmit = () => {
+      console.log("Handle Submit called");
+   };
 
    const handleRequestSort = (
       event: React.MouseEvent<unknown>,
@@ -274,91 +305,124 @@ export default function EnhancedTable<T>({
    );
 
    return (
-      <Box
-         sx={{
-            width: sidebar === true ? "80%" : "90%",
-            marginLeft: sidebar === true ? "250px" : "90px",
-         }}
-      >
-         <Paper sx={{ width: "100%", mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected.length} title={title} />
-            <TableContainer>
-               <Table
-                  sx={{ minWidth: 750 }}
-                  aria-labelledby='tableTitle'
-                  size={dense ? "small" : "medium"}
-               >
-                  <EnhancedTableHead
-                     numSelected={selected.length}
-                     order={order}
-                     orderBy={orderBy}
-                     onSelectAllClick={handleSelectAllClick}
-                     onRequestSort={handleRequestSort}
-                     rowCount={data.length}
-                     tableHeadData={tableHeadData}
-                  />
-                  <TableBody>
-                     {visibleRows.map((row, index) => {
-                        const isItemSelected = isSelected(index);
-                        const labelId = `enhanced-table-checkbox-${index}`;
+      <>
+         <Box
+            sx={{
+               width: sidebar === true ? "80%" : "90%",
+               marginLeft: sidebar === true ? "250px" : "90px",
+            }}
+         >
+            <Paper sx={{ width: "100%", mb: 2 }}>
+               <EnhancedTableToolbar
+                  numSelected={selected.length}
+                  title={title}
+                  setOpen={setOpen}
+               />
+               <TableContainer>
+                  <Table
+                     sx={{ minWidth: 750 }}
+                     aria-labelledby='tableTitle'
+                     size={dense ? "small" : "medium"}
+                  >
+                     <EnhancedTableHead
+                        numSelected={selected.length}
+                        order={order}
+                        orderBy={orderBy}
+                        onSelectAllClick={handleSelectAllClick}
+                        onRequestSort={handleRequestSort}
+                        rowCount={data.length}
+                        tableHeadData={tableHeadData}
+                     />
+                     <TableBody>
+                        {visibleRows.map((row, index) => {
+                           const isItemSelected = isSelected(index);
+                           const labelId = `enhanced-table-checkbox-${index}`;
 
-                        return (
-                           <TableRow
-                              hover
-                              onClick={(event) => handleClick(event, index)}
-                              role='checkbox'
-                              aria-checked={isItemSelected}
-                              tabIndex={-1}
-                              key={index}
-                              selected={isItemSelected}
-                              sx={{ cursor: "pointer" }}
-                           >
-                              <TableCell padding='checkbox'>
-                                 <Checkbox
-                                    color='primary'
-                                    checked={isItemSelected}
-                                    inputProps={{
-                                       "aria-labelledby": labelId,
-                                    }}
-                                 />
-                              </TableCell>
-                              {tableHeadData.map((headCell) => (
-                                 <TableCell
-                                    key={headCell.id}
-                                    align={headCell.numeric ? "right" : "left"}
-                                 >
-                                    {`${(row as any)[headCell.id]}`}
+                           return (
+                              <TableRow
+                                 hover
+                                 onClick={(event) => handleClick(event, index)}
+                                 role='checkbox'
+                                 aria-checked={isItemSelected}
+                                 tabIndex={-1}
+                                 key={index}
+                                 selected={isItemSelected}
+                                 sx={{ cursor: "pointer" }}
+                              >
+                                 <TableCell padding='checkbox'>
+                                    <Checkbox
+                                       color='primary'
+                                       checked={isItemSelected}
+                                       inputProps={{
+                                          "aria-labelledby": labelId,
+                                       }}
+                                    />
                                  </TableCell>
-                              ))}
+                                 {tableHeadData.map((headCell) => (
+                                    <TableCell
+                                       key={headCell.id as string} // Ensure id is treated as a string
+                                       align={
+                                          headCell.numeric ? "right" : "left"
+                                       }
+                                    >
+                                       {headCell.id === "createdAt"
+                                          ? moment(
+                                               (row as any)["createdAt"]
+                                            ).format("MMMM Do YYYY")
+                                          : headCell.id === "userId"
+                                          ? (row as any).userId.fullName
+                                          : headCell.id === "comments"
+                                          ? (row as any).comments &&
+                                            (row as any).comments.map(
+                                               (comment: any, i: any) => (
+                                                  <div key={i}>
+                                                     {comment.comment}
+                                                  </div>
+                                               )
+                                            )
+                                          : (row as any)[
+                                               headCell.id as keyof any
+                                            ]}
+                                    </TableCell>
+                                 ))}
+                              </TableRow>
+                           );
+                        })}
+                        {emptyRows > 0 && (
+                           <TableRow
+                              style={{
+                                 height: (dense ? 33 : 53) * emptyRows,
+                              }}
+                           >
+                              <TableCell colSpan={tableHeadData.length} />
                            </TableRow>
-                        );
-                     })}
-                     {emptyRows > 0 && (
-                        <TableRow
-                           style={{
-                              height: (dense ? 33 : 53) * emptyRows,
-                           }}
-                        >
-                           <TableCell colSpan={tableHeadData.length} />
-                        </TableRow>
-                     )}
-                  </TableBody>
-               </Table>
-            </TableContainer>
-            <TablePagination
-               rowsPerPageOptions={[5, 10, 25]}
-               component='div'
-               count={data.length}
-               rowsPerPage={rowsPerPage}
-               page={page}
-               onPageChange={handleChangePage}
-               onRowsPerPageChange={handleChangeRowsPerPage}
+                        )}
+                     </TableBody>
+                  </Table>
+               </TableContainer>
+               <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component='div'
+                  count={data.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+               />
+            </Paper>
+            <FormControlLabel
+               control={<Switch checked={dense} onChange={handleChangeDense} />}
+               label='Dense padding'
             />
-         </Paper>
-         <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense} />}
-            label='Dense padding'
+         </Box>
+
+         <CustomFormModal
+            open={open}
+            handleClose={handleClose}
+            handleSubmit={handleSubmit}
+            fields={tableHeadData}
+            title={title}
          />
-      </Box>
+      </>
    );
 }

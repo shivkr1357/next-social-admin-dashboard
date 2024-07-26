@@ -40,6 +40,16 @@ export interface PostData {
    updatedAt: string;
 }
 
+export interface CommentData {
+   _id: string;
+   comment: string;
+   postId: string;
+   userId: string;
+   likes: string[];
+   createdAt: string;
+   updatedAt: string;
+}
+
 export interface EnhancedTableProps<T> {
    data: T[];
    tableHeadData: HeadCell[];

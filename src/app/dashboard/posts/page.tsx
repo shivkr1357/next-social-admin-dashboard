@@ -1,16 +1,15 @@
 "use client";
 import { getAllPosts } from "@/app/redux/actions/post";
-import { getAllUsers } from "@/app/redux/actions/user";
 import { postsActions } from "@/app/redux/reducers/post";
 import { RootState } from "@/app/redux/store";
 import EnhancedTable from "@/components/CustomTable/Table";
-import { Data, PostData } from "@/types/types";
+import { PostData } from "@/types/types";
 import { generateHeadCells, HeadCell, isAuthenticated } from "@/utils/utils";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const Users = () => {
+const Comments = () => {
    const [accessTokenCheck, setAccessTokenCheck] = useState(
       localStorage.getItem("accessToken")
    );
@@ -61,4 +60,4 @@ const Users = () => {
    );
 };
 
-export default Users;
+export default Comments;

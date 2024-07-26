@@ -1,6 +1,7 @@
 export const BASE_URL = "http://localhost:5000/api/v1";
 
 export const MENU_ITEM = [
+   { name: "Dashboard", link: "/dashboard" },
    { name: "Users", link: "/dashboard/users" },
    { name: "Posts", link: "/dashboard/posts" },
    //    { name: "Reports", link: "/reports" },
