@@ -5,6 +5,7 @@ const themeSlice = createSlice({
    initialState: {
       theme: "light",
       sidebar: true,
+      alert: false,
    },
    reducers: {
       toggleTheme: (state) => {
@@ -12,6 +13,9 @@ const themeSlice = createSlice({
       },
       toggleSidebar: (state) => {
          state.sidebar = !state.sidebar;
+      },
+      toogleAlert: (state, action) => {
+         state.alert = action.payload;
       },
    },
 });
@@ -22,4 +26,5 @@ export const themeActions = themeSlice.actions;
 export interface IAuthState {
    theme: string;
    sidebar: boolean;
+   alert: boolean;
 }

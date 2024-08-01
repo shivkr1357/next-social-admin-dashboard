@@ -19,7 +19,7 @@ const Comments = () => {
 
    const { comments } = useSelector((state: RootState) => state.comments);
    const { order, orderBy, selected, page, dense, rowsPerPage } = useSelector(
-      (state: RootState) => state.paginationn
+      (state: RootState) => state.pagination
    );
 
    const getAllCommentsData = useCallback(async () => {

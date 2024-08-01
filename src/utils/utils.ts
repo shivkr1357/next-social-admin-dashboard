@@ -37,7 +37,7 @@ export function getComparator(
 
 export interface HeadCell {
    disablePadding: boolean;
-   id: keyof Data | "createdAt" | "userId" | "comments";
+   id: keyof Data | "createdAt" | "userId" | "comments" | "likes";
    label: string;
    numeric: boolean;
    placeholder: string;

@@ -19,7 +19,7 @@ const Users = () => {
 
    const { users } = useSelector((state: RootState) => state.users);
    const { order, orderBy, selected, page, dense, rowsPerPage } = useSelector(
-      (state: RootState) => state.paginationn
+      (state: RootState) => state.pagination
    );
 
    const getAllUsersData = useCallback(async () => {

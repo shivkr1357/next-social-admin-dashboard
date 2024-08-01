@@ -1,5 +1,5 @@
-import { Order } from "@/utils/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Order } from "@/utils/utils";
 
 interface IPaginationState {
    order: Order;
@@ -8,15 +8,17 @@ interface IPaginationState {
    page: number;
    dense: boolean;
    rowsPerPage: number;
+   total: number;
 }
 
 const initialState: IPaginationState = {
    order: "asc",
    orderBy: "_id", // Ensure this property exists in both Data and PostData
    selected: [],
-   page: 0,
+   page: 1,
    dense: false,
    rowsPerPage: 5,
+   total: 0,
 };
 
 export const paginationSlice = createSlice({
@@ -26,10 +28,7 @@ export const paginationSlice = createSlice({
       setOrder: (state, action: PayloadAction<Order>) => {
          state.order = action.payload;
       },
-      setOrderBy: (
-         state,
-         action: PayloadAction<string> // Accept any string, should be validated on usage
-      ) => {
+      setOrderBy: (state, action: PayloadAction<string>) => {
          state.orderBy = action.payload;
       },
       setPage: (state, action: PayloadAction<number>) => {
@@ -43,6 +42,9 @@ export const paginationSlice = createSlice({
       },
       setSelected: (state, action: PayloadAction<number[]>) => {
          state.selected = action.payload;
+      },
+      setTotal: (state, action: PayloadAction<number>) => {
+         state.total = action.payload;
       },
    },
 });
