@@ -6,19 +6,21 @@ import { postsReducer as posts } from "./post";
 import { paginationReducer as pagination } from "./pagination";
 import { commentsReducer as comments } from "./comments";
 import { eventsReducer as events } from "./events";
+import { suggestionsReducer as suggestions } from "./suggestions";
 
 const tobePersisted = {
-   auth,
-   theme,
-   users,
-   pagination,
-   posts,
-   comments,
-   events,
+  auth,
+  theme,
+  users,
+  pagination,
+  posts,
+  comments,
+  events,
+  suggestions,
 };
 
 export const reducers = combineReducers({
-   ...tobePersisted,
+  ...tobePersisted,
 });
 
 export const tobePersistedKeys = Object.keys(tobePersisted);

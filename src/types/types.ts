@@ -60,6 +60,21 @@ export interface EventData {
   updatedAt: Date;
 }
 
+export interface SuggestionsData {
+  suggestions: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReportData {
+  content: string;
+  userId: string;
+  postId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface EnhancedTableProps<T> {
   data: T[];
   tableHeadData: HeadCell[];
