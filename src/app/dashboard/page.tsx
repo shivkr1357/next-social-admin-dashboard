@@ -1,12 +1,23 @@
+"use client";
+import CustomLineChart from "@/components/Charts/Line";
+import { Grid } from "@mui/material";
 import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 const Dashboard = () => {
-   // useEffect(() => {
-   //    const accessToken = localStorage.getItem("accessToken");
-   //    const refreshToken = localStorage.getItem("refreshToken");
-   // }, []);
+  const { sidebar } = useSelector((state: RootState) => state.theme);
 
-   return <div></div>;
+  return (
+    <Grid
+      container
+      sx={{
+        marginLeft: sidebar === true ? "25px" : "90px",
+      }}
+    >
+      <CustomLineChart />
+    </Grid>
+  );
 };
 
 export default Dashboard;
