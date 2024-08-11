@@ -7,6 +7,7 @@ import { paginationReducer as pagination } from "./pagination";
 import { commentsReducer as comments } from "./comments";
 import { eventsReducer as events } from "./events";
 import { suggestionsReducer as suggestions } from "./suggestions";
+import { reportsReducer as reports } from "./report";
 
 const tobePersisted = {
   auth,
@@ -17,6 +18,7 @@ const tobePersisted = {
   comments,
   events,
   suggestions,
+  reports,
 };
 
 export const reducers = combineReducers({
